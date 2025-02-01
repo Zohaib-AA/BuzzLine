@@ -64,9 +64,9 @@ export class PostService {
   }
 
   removeBuzz(buzzId: string) {
-    this.http.delete('http://localhost:3000/api/posts/' + buzzId).subscribe(() => {
-      this.buzz = this.buzz.filter(bz => bz.id != buzzId)
-      this.buzzUpdate.next({chatData:  [...this.buzz], maxCount: 1});
+    this.http.delete<{message: string, maxCount: number}>('http://localhost:3000/api/posts/' + buzzId).subscribe((buzzdata) => {
+      this.buzz = this.buzz.filter(bz => bz.id != buzzId);
+      this.buzzUpdate.next({chatData:  [...this.buzz], maxCount: buzzdata.maxCount});
     })
   }
 

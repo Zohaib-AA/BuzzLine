@@ -54,10 +54,13 @@ postRoute.post('', multer({storage: storage}).single('image'), (req, res, next) 
 postRoute.delete('/:id', (req, res, next) => {
     console.log(req.params.id);
     Buzz.deleteOne({ _id: req.params.id }).then(result => {
-        console.log('Deleted');
+        return Buzz.estimatedDocumentCount()
+    }).then((maxCount)=>{
         res.status(200).json({
-            message: "Deleted record"
+            message: "Deleted record",
+            maxCount: maxCount
         })
+        
     })
 });
 
