@@ -11,24 +11,30 @@ import { Router } from '@angular/router';
 })
 export class PostService {
   private buzz: Buzz[] = [];
-  private buzzUpdate = new Subject<Buzz[]>();
+  private buzzUpdate = new Subject<{chatData: Buzz[],maxCount: number}>();
 
   constructor(private http: HttpClient, public route: Router) { }
 
-  getBuzz() {
-    this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts').pipe(map((postData) => {
-      return postData.posts.map((post: any) => {
-        return {
-          title: post.title,
-          content: post.content,
-          id: post._id,
-          imagePath: post.imagePath
-        }
-      });
+  getBuzz(pageSize: number, currrentPage: number) {
+    const params = `?pageSize=${pageSize}&currentPage=${currrentPage}`;
+    this.http.get<{ message: string, posts: any, maxCount: number }>('http://localhost:3000/api/posts'+params).pipe(map((postData) => {
+      return {
+
+         posts:  postData.posts.map((post: any) => {
+          return { 
+            title: post.title,
+            content: post.content,
+            id: post._id,
+            imagePath: post.imagePath
+          }
+          
+        
+      }),
+      maxCount: postData.maxCount};
     }))
       .subscribe((buzzdata) => {
-        this.buzz = buzzdata;
-        this.buzzUpdate.next([...this.buzz]);
+        this.buzz = buzzdata.posts;
+        this.buzzUpdate.next({chatData: [...this.buzz], maxCount:  buzzdata.maxCount});
       })
   }
 
@@ -52,15 +58,15 @@ export class PostService {
       console.log(responseData);
       const buzz: Buzz = { id: responseData.buzz.id, title: title, content: content, imagePath: responseData.buzz.imagePath };
       this.buzz.push(buzz);
-      this.buzzUpdate.next([...this.buzz]);
+      this.buzzUpdate.next({chatData:  [...this.buzz], maxCount: 1});
       this.route.navigate(['/']);
     })
   }
 
   removeBuzz(buzzId: string) {
-    this.http.delete('http://localhost:3000/api/posts/' + buzzId).subscribe(() => {
-      this.buzz = this.buzz.filter(bz => bz.id != buzzId)
-      this.buzzUpdate.next([...this.buzz])
+    this.http.delete<{message: string, maxCount: number}>('http://localhost:3000/api/posts/' + buzzId).subscribe((buzzdata) => {
+      this.buzz = this.buzz.filter(bz => bz.id != buzzId);
+      this.buzzUpdate.next({chatData:  [...this.buzz], maxCount: buzzdata.maxCount});
     })
   }
 

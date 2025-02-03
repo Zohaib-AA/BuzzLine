@@ -6,6 +6,8 @@ const Buzz = require("../models/postModel");
 
 const multer = require('multer');
 
+const pageRoute = require('./paginator');
+
 const MIME_TYPE = {
     'image/png': 'png',
     'image/jpg': 'jpg',
@@ -48,22 +50,17 @@ postRoute.post('', multer({storage: storage}).single('image'), (req, res, next) 
     });
 })
 
-postRoute.get('', (req, res, next) => {
-    Buzz.find().then((documents) => {
-        res.status(200).json({
-            message: "Collection sent",
-            posts: documents
-        });
-    })
-});
 
 postRoute.delete('/:id', (req, res, next) => {
     console.log(req.params.id);
     Buzz.deleteOne({ _id: req.params.id }).then(result => {
-        console.log('Deleted');
+        return Buzz.estimatedDocumentCount()
+    }).then((maxCount)=>{
         res.status(200).json({
-            message: "Deleted record"
+            message: "Deleted record",
+            maxCount: maxCount
         })
+        
     })
 });
 
@@ -86,6 +83,7 @@ postRoute.put('/:id',multer({storage: storage}).single('image'), (req, res, next
 })
 
 postRoute.get('/:id', (req, res, next) => {
+    console.log("wrong Request")
     Buzz.findById(req.params.id).then(buzz => {
         if (buzz) {
             res.status(200).json(buzz)
@@ -95,6 +93,29 @@ postRoute.get('/:id', (req, res, next) => {
             })
         }
     })
-})
+});
+postRoute.get('', (req, res, next) => {
+    console.log('Request Received');
+    const pageSize = +req.query.pageSize;
+    const currentPage = +req.query.currentPage;
+    const findQuery = Buzz.find();
+    if (pageSize && currentPage) {
+        findQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+    }
+    let fetchedBuzz;
+
+    findQuery.then(documents => {
+        fetchedBuzz = documents;
+        return Buzz.estimatedDocumentCount()
+    }).then(maxCount => {
+        res.status(200).json({
+            message: "Collection sent",
+            posts: fetchedBuzz,
+            maxCount: maxCount
+        });
+    })
+});
+postRoute.use('/paginator', pageRoute);
+
 
 module.exports = postRoute;
