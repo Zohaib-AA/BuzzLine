@@ -16,13 +16,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { LoginComponent } from './components/auth/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     PostCreateComponent,
-    PostListComponent
+    PostListComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
