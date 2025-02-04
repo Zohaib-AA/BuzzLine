@@ -14,7 +14,7 @@ export class AuthService {
       email: email,
       password: password
     }
-    this.http.post('http://localhost:3000/api/sign/login', auth).subscribe(response => {
+    this.http.post('http://localhost:3000/api/account/register', auth).subscribe(response => {
       console.log(response);
     })
   }

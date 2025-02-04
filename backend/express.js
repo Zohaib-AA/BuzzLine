@@ -26,6 +26,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/posts', postRoute);
-app.use('/api/sign', authRoute);
+app.use('/api/account', authRoute);
 
 module.exports = app;
