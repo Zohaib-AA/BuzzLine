@@ -34,9 +34,7 @@ export class LoginComponent {
       return;
     }
     console.log(this.loginForm);
-    if(this.actionText == Auth.signup){
-      this.authService.createUser(this.loginForm.value.email, this.loginForm.value.password);
-    }
+      this.authService.createUser(this.loginForm.value.email, this.loginForm.value.password, this.actionText);
   }
 
   get validate(){
