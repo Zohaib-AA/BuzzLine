@@ -1,6 +1,6 @@
 <mat-card>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin(matForm)" #matForm="ngForm" *ngIf="!isLoading">
+    <form [formGroup]="loginForm" (ngSubmit)="onClick(matForm)" #matForm="ngForm" *ngIf="!isLoading">
         <mat-form-field>
             <input matInput type="email" id="email" placeholder="Email here..." formControlName="email">
             <mat-error *ngIf="isSubmit && validate['email'].invalid">Please add email</mat-error>
@@ -10,8 +10,8 @@
                 formControlName="password" type="password">
             <mat-error *ngIf="isSubmit && validate['password'].invalid">Please Add Description</mat-error>
         </mat-form-field>
-        <button type="submit" mat-raised-button color="primary" (click)="submitForm()">
-            Login
+        <button type="submit" mat-raised-button color="primary" (click)="submitForm(actionText)">
+            {{actionText}}
         </button>
     </form>
 </mat-card>

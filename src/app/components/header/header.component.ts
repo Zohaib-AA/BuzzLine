@@ -16,7 +16,8 @@ export class HeaderComponent {
   constructor(public router: Router) { }
 
   onClick(mode: string) {
-    this.router.navigate(['/login']);
+
+    this.router.navigate(['/account/' , mode]);
   }
 
 }
