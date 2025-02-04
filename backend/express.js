@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const path = require('path');
 
 const postRoute = require('./posts/post');
+const authRoute = require('./posts/auth');
 const app = express();
 
 mongoose.connect("mongodb+srv://Zohaib:l9OSdSAmYUVYuGJ3@clusterbuzz.3o7sr.mongodb.net/express-angular?retryWrites=true&w=majority&appName=ClusterBuzz").then(() => {
@@ -25,5 +26,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/posts', postRoute);
+app.use('/api/sign', authRoute);
 
 module.exports = app;
