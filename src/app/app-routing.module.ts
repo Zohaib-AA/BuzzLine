@@ -8,7 +8,7 @@ const routes: Routes = [
   { path: '', component: PostListComponent },
   { path: 'create', component: PostCreateComponent },
   { path: 'edit/:buzzId', component: PostCreateComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'account/:account', component: LoginComponent }
 
 ];
 
