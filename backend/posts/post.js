@@ -8,6 +8,8 @@ const multer = require('multer');
 
 const pageRoute = require('./paginator');
 
+const valAuth = require('../middleware/validate-auth');
+
 const MIME_TYPE = {
     'image/png': 'png',
     'image/jpg': 'jpg',
@@ -32,7 +34,7 @@ const storage = multer.diskStorage({
 
 
 
-postRoute.post('', multer({storage: storage}).single('image'), (req, res, next) => {
+postRoute.post('', valAuth, multer({storage: storage}).single('image'), (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     const buzz = new Buzz({
         title: req.body.title,
@@ -51,7 +53,7 @@ postRoute.post('', multer({storage: storage}).single('image'), (req, res, next) 
 })
 
 
-postRoute.delete('/:id', (req, res, next) => {
+postRoute.delete('/:id', valAuth, (req, res, next) => {
     console.log(req.params.id);
     Buzz.deleteOne({ _id: req.params.id }).then(result => {
         return Buzz.estimatedDocumentCount()
@@ -64,7 +66,7 @@ postRoute.delete('/:id', (req, res, next) => {
     })
 });
 
-postRoute.put('/:id',multer({storage: storage}).single('image'), (req, res, next) => {
+postRoute.put('/:id', valAuth, multer({storage: storage}).single('image'), (req, res, next) => {
     console.log(req.file);
     const file = req.file;
     let imagePath = req.body.imagePath;

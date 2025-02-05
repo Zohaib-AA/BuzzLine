@@ -3,6 +3,7 @@ import { Buzz } from '../../../interfaces&constants/buzz.interface';
 import { PostService } from '../../../services/post.service';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -14,13 +15,15 @@ import { PageEvent } from '@angular/material/paginator';
 export class PostListComponent implements OnInit, OnDestroy {
   buzz: Buzz[] = [];
   private buzzSub: Subscription;
-  isLoading : boolean = false;
+  private authSub!: Subscription
+  isLoading: boolean = false;
   buzzCount: number = 0;
   pageSize = 3;
-  pageSizeOptions = [3,6,9];
+  pageSizeOptions = [3, 6, 9];
   currentPage: number = 1;
+  userAuthenticated: boolean = false;
 
-  constructor(private buzzService: PostService) {
+  constructor(private buzzService: PostService, private authService: AuthService) {
     this.buzzSub = this.buzzService.buzzUpdateListener().subscribe((fetchedData: any) => {
       this.buzz = fetchedData.chatData;
       this.buzzCount = fetchedData.maxCount;
@@ -30,19 +33,24 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
     this.buzzService.getBuzz(this.pageSize, this.currentPage);
+    this.userAuthenticated = this.authService.userAuthentication;
+    this.authSub = this.authService.getAuthListener().subscribe(isAuthenticated => {
+      this.userAuthenticated = isAuthenticated;
+    })
   }
 
   onDelete(buzzId: string) {
     this.buzzService.removeBuzz(buzzId);
   }
 
-  handlePageEvent(event:PageEvent){
-    console.log(typeof(event));
+  handlePageEvent(event: PageEvent) {
+    console.log(typeof (event));
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this.buzzService.getBuzz(this.pageSize, this.currentPage);
   }
   ngOnDestroy(): void {
     this.buzzSub.unsubscribe();
+    this.authSub.unsubscribe();
   }
 }

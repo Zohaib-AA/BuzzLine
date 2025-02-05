@@ -9,7 +9,7 @@
             <img [src]="bz.imagePath" alt={{bz.title}}>
         </div>
         <p>{{bz.content}}</p>
-        <mat-action-row>
+        <mat-action-row *ngIf="userAuthenticated">
             <a mat-button color="primary" [routerLink]="['/edit',bz.id]">Edit</a>
             <button mat-button color="warn" (click)="onDelete(bz.id)"> Delete </button>
         </mat-action-row>
