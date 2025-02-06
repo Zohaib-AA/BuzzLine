@@ -34,17 +34,18 @@ const storage = multer.diskStorage({
 
 
 
-postRoute.post('', valAuth, multer({storage: storage}).single('image'), (req, res, next) => {
+postRoute.post('', valAuth, multer({ storage: storage }).single('image'), (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     const buzz = new Buzz({
         title: req.body.title,
         content: req.body.content,
-        imagePath: url + "/images/" + req.file.filename 
+        imagePath: url + "/images/" + req.file.filename,
+        creator: req.userData.userId
     });
     buzz.save().then((createdBuzz) => {
         res.status(200).json({
             message: "Post added succesfully",
-            buzz : {
+            buzz: {
                 ...createdBuzz,
                 id: createdBuzz._id
             }
@@ -55,32 +56,43 @@ postRoute.post('', valAuth, multer({storage: storage}).single('image'), (req, re
 
 postRoute.delete('/:id', valAuth, (req, res, next) => {
     console.log(req.params.id);
-    Buzz.deleteOne({ _id: req.params.id }).then(result => {
+    Buzz.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(result => {
+        if (result.deletedCount <= 0) {
+            res.status(401).json({
+                message: 'Not Authorized!'
+            })
+        }
         return Buzz.estimatedDocumentCount()
-    }).then((maxCount)=>{
+    }).then((maxCount) => {
         res.status(200).json({
             message: "Deleted record",
             maxCount: maxCount
         })
-        
+
     })
 });
 
-postRoute.put('/:id', valAuth, multer({storage: storage}).single('image'), (req, res, next) => {
+postRoute.put('/:id', valAuth, multer({ storage: storage }).single('image'), (req, res, next) => {
     console.log(req.file);
     const file = req.file;
     let imagePath = req.body.imagePath;
-    if(file){
+    if (file) {
         const url = req.protocol + '://' + req.get('host');
-        imagePath =  url + "/images/" + req.file.filename; 
+        imagePath = url + "/images/" + req.file.filename;
     }
-    const buzz = new Buzz({ _id: req.body.id, title: req.body.title, content: req.body.content, imagePath: imagePath });
+    const buzz = new Buzz({ _id: req.body.id, title: req.body.title, content: req.body.content, imagePath: imagePath, creator: req.userData.userId });
     console.log(buzz);
-    Buzz.updateOne({ _id: req.params.id }, buzz).then(result => {
+    Buzz.updateOne({ _id: req.params.id, creator: req.userData.userId }, buzz).then(result => {
         console.log(result);
-        res.status(200).json({
-            message: 'Updated succesfully',
-        })
+        if (result.modifiedCount > 0) {
+            res.status(200).json({
+                message: 'Updated succesfully',
+            });
+        } else {
+            res.status(401).json({
+                message: 'Not Authorized!'
+            })
+        }
     })
 })
 

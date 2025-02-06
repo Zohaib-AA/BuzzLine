@@ -38,7 +38,7 @@ export class PostCreateComponent implements OnInit {
         this.buzzId = paramMap.get('buzzId') ?? '';
         this.isLoading = true;
         this.buzzService.getBuzzWithId(this.buzzId).subscribe(postData => {
-          this.buzz = { id: postData._id, title: postData.title, content: postData.content, imagePath: postData.imagePath ?? '' }
+          this.buzz = { id: postData._id, title: postData.title, content: postData.content, imagePath: postData.imagePath ?? '', creator: postData.creator }
           this.buzzForm.patchValue({ title: this.buzz?.title ?? '' });
           this.buzzForm.patchValue({ content: this.buzz?.content ?? '' });
           this.buzzForm.patchValue({ image: this.buzz?.imagePath ?? '' });
@@ -56,8 +56,6 @@ export class PostCreateComponent implements OnInit {
     if (this.buzzForm.invalid) {
       return;
     }
-    console.log(matForm);
-    console.log('this is mat form');
     this.isLoading = true;
     if (this.mode === Mode.create) {
       this.buzzService.addBuzz(this.validate['title'].value, this.validate['content'].value, this.validate['image'].value)

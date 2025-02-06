@@ -9,11 +9,11 @@
             <img [src]="bz.imagePath" alt={{bz.title}}>
         </div>
         <p>{{bz.content}}</p>
-        <mat-action-row *ngIf="userAuthenticated">
+        <mat-action-row *ngIf="userAuthenticated && userId === bz.creator">
             <a mat-button color="primary" [routerLink]="['/edit',bz.id]">Edit</a>
             <button mat-button color="warn" (click)="onDelete(bz.id)"> Delete </button>
         </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
-<mat-paginator [length]="buzzCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" aria-label="Select page" (page)="handlePageEvent($event)"></mat-paginator>
+<mat-paginator *ngIf="buzz.length" [length]="buzzCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" aria-label="Select page" (page)="handlePageEvent($event)"></mat-paginator>
 <p class="mat-body-1 info-text" *ngIf="buzz.length <= 0 && !isLoading">No Buzz!!!</p>
