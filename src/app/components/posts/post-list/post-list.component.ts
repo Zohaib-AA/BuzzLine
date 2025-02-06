@@ -22,6 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   pageSizeOptions = [3, 6, 9];
   currentPage: number = 1;
   userAuthenticated: boolean = false;
+  userId: string = '';
 
   constructor(private buzzService: PostService, private authService: AuthService) {
     this.buzzSub = this.buzzService.buzzUpdateListener().subscribe((fetchedData: any) => {
@@ -32,10 +33,12 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.isLoading = true;
+    this.userId = this.authService.userAuthorized;
     this.buzzService.getBuzz(this.pageSize, this.currentPage);
     this.userAuthenticated = this.authService.userAuthentication;
     this.authSub = this.authService.getAuthListener().subscribe(isAuthenticated => {
       this.userAuthenticated = isAuthenticated;
+      this.userId = this.authService.userAuthorized;
     })
   }
 

@@ -3,4 +3,5 @@ export interface Buzz {
     title: string;
     content: string;
     imagePath: string;
+    creator: string
 }

@@ -43,11 +43,12 @@ authRoute.post('/login', (req, res, next) => {
                 message: 'Incorrect password'
             });
         }
-        const token = jwt.sign({ email: currentUser.email, userId: currentUser.userId }, 'this_is_a_key_which_is_used_for_login', { expiresIn: '1h' });
+        const token = jwt.sign({ email: currentUser.email, userId: currentUser._id }, 'this_is_a_key_which_is_used_for_login', { expiresIn: '1h' });
         res.status(200).json({
             token: token,
             message: 'Logged-In succesfully',
-            expiresIn: 3600
+            expiresIn: 3600,
+            userId : currentUser._id
         })
 
     }).catch(err => {

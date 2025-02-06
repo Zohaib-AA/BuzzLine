@@ -19,16 +19,14 @@ export class PostService {
     const params = `?pageSize=${pageSize}&currentPage=${currrentPage}`;
     this.http.get<{ message: string, posts: any, maxCount: number }>('http://localhost:3000/api/posts'+params).pipe(map((postData) => {
       return {
-
          posts:  postData.posts.map((post: any) => {
           return { 
             title: post.title,
             content: post.content,
             id: post._id,
-            imagePath: post.imagePath
+            imagePath: post.imagePath,
+            creator: post.creator
           }
-          
-        
       }),
       maxCount: postData.maxCount};
     }))
@@ -56,7 +54,7 @@ export class PostService {
 
     this.http.post<{ message: string, buzz: Buzz }>('http://localhost:3000/api/posts', newData).subscribe((responseData) => {
       console.log(responseData);
-      const buzz: Buzz = { id: responseData.buzz.id, title: title, content: content, imagePath: responseData.buzz.imagePath };
+      const buzz: Buzz = { id: responseData.buzz.id, title: title, content: content, imagePath: responseData.buzz.imagePath, creator: '' };
       this.buzz.push(buzz);
       this.buzzUpdate.next({chatData:  [...this.buzz], maxCount: 1});
       this.route.navigate(['/']);
@@ -71,7 +69,7 @@ export class PostService {
   }
 
   getBuzzWithId(buzzId: string) {
-    return this.http.get<{ _id: string, title: string, content: string, imagePath: string }>('http://localhost:3000/api/posts/' + buzzId);
+    return this.http.get<{ _id: string, title: string, content: string, imagePath: string, creator: string }>('http://localhost:3000/api/posts/' + buzzId);
   }
 
   updateBuzz(buzzId: string, title: string, content: string, image: File | string) {
@@ -88,12 +86,11 @@ export class PostService {
         title: title,
         content: content,
         imagePath: image,
-        id: buzzId
+        id: buzzId,
+        creator : ''
       }
     }
     this.http.put('http://localhost:3000/api/posts/' + buzzId, updatedBuzz).subscribe((result) => {
-      const buzz = { title: title, content: content, id: buzzId, imagePath: ''}
-      console.log(result);
       this.route.navigate(['/'])
     })
   }
