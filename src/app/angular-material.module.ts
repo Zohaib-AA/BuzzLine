@@ -12,16 +12,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [],
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatDialogModule,
-  ],
   exports: [
     MatToolbarModule,
     MatButtonModule,
