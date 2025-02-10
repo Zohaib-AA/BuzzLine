@@ -73,7 +73,6 @@ export class PostService {
   }
 
   updateBuzz(buzzId: string, title: string, content: string, image: File | string) {
-
     let updatedBuzz: Buzz | FormData;
     if (typeof (image) === 'object') {
       updatedBuzz = new FormData();

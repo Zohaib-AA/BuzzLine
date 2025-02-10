@@ -50,30 +50,38 @@ postRoute.post('', valAuth, multer({ storage: storage }).single('image'), (req, 
                 id: createdBuzz._id
             }
         })
-    });
+    }).catch(error => {
+        res.status(500).json({
+            message: 'Post could not be added!',
+            error: error
+        })
+    })
+        ;
 })
 
 
 postRoute.delete('/:id', valAuth, (req, res, next) => {
-    console.log(req.params.id);
     Buzz.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(result => {
         if (result.deletedCount <= 0) {
             res.status(401).json({
-                message: 'Not Authorized!'
+                message: 'You are not authorized!'
             })
         }
         return Buzz.estimatedDocumentCount()
     }).then((maxCount) => {
         res.status(200).json({
-            message: "Deleted record",
+            message: "Record has been deleted",
             maxCount: maxCount
         })
-
+    }).catch(error => {
+        res.status(500).json({
+            message: 'Deletion attempt failed!',
+            error: error
+        })
     })
 });
 
 postRoute.put('/:id', valAuth, multer({ storage: storage }).single('image'), (req, res, next) => {
-    console.log(req.file);
     const file = req.file;
     let imagePath = req.body.imagePath;
     if (file) {
@@ -81,35 +89,42 @@ postRoute.put('/:id', valAuth, multer({ storage: storage }).single('image'), (re
         imagePath = url + "/images/" + req.file.filename;
     }
     const buzz = new Buzz({ _id: req.body.id, title: req.body.title, content: req.body.content, imagePath: imagePath, creator: req.userData.userId });
-    console.log(buzz);
     Buzz.updateOne({ _id: req.params.id, creator: req.userData.userId }, buzz).then(result => {
-        console.log(result);
         if (result.modifiedCount > 0) {
             res.status(200).json({
-                message: 'Updated succesfully',
+                message: 'Post updated succesfully',
             });
         } else {
             res.status(401).json({
-                message: 'Not Authorized!'
+                message: 'You are not authorized!'
             })
         }
+    }).catch(error => {
+        res.status(500).json({
+            message: 'Update attempt failed!',
+            error: error
+        })
     })
 })
 
 postRoute.get('/:id', (req, res, next) => {
-    console.log("wrong Request")
     Buzz.findById(req.params.id).then(buzz => {
         if (buzz) {
             res.status(200).json(buzz)
         } else {
             res.status(404).json({
-                message: "Buzz not found!"
+                message: "No Buzz exists with this id!"
             })
         }
+    }).catch(error => {
+        res.status(500).json({
+            message: 'Some error occured with the server!',
+            error: error
+        })
     })
 });
+
 postRoute.get('', (req, res, next) => {
-    console.log('Request Received');
     const pageSize = +req.query.pageSize;
     const currentPage = +req.query.currentPage;
     const findQuery = Buzz.find();
@@ -127,9 +142,13 @@ postRoute.get('', (req, res, next) => {
             posts: fetchedBuzz,
             maxCount: maxCount
         });
+    }).catch(error => {
+        res.status(500).json({
+            message: 'Fetching buzz failed!',
+            error: error
+        })
     })
 });
+
 postRoute.use('/paginator', pageRoute);
-
-
 module.exports = postRoute;
