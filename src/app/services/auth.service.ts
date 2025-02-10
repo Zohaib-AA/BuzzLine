@@ -23,8 +23,8 @@ export class AuthService {
   get userAuthentication(): boolean {
     return this.isAuthenticated;
   }
-   
-  get userAuthorized(){
+
+  get userAuthorized() {
     return this.userId;
   }
 
@@ -43,21 +43,22 @@ export class AuthService {
     }
     const url = `http://localhost:3000/api/account/${sig}`;
     this.http.post<{ token: string, expiresIn: number, userId: string }>(url, auth).subscribe(response => {
-      console.log(response);
       if (mode == 'login') {
         this.token = response.token;
+        this.isAuthenticated = true;
         if (this.token) {
           const expiresIn = response.expiresIn;
           this.setTimerForExpiration(expiresIn);
-          this.isAuthenticated = true;
           const now = new Date();
           const exp = new Date(now.getTime() + expiresIn * 1000);
           this.userId = response.userId;
           this.setSession(this.token, exp, this.userId);
-          this.authListener.next(true);
-          this.route.navigate(['/']);
         }
+        this.authListener.next(true);
+        this.route.navigate(['/']);
       }
+    }, err => {
+      this.authListener.next(false);
     })
   }
   logout() {
@@ -92,7 +93,7 @@ export class AuthService {
     return {
       token: token,
       expiresIn: new Date(expiresIn),
-      userId : userId
+      userId: userId
     }
   }
 

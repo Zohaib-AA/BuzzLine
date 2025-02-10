@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { PostService } from '../../../services/post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Mode } from '../../../interfaces&constants/key.constant';
@@ -23,7 +23,7 @@ export class PostCreateComponent implements OnInit {
   buzz!: Buzz;
   isLoading: boolean = false;
   imagePreview: any;
-  constructor(private fb: FormBuilder, public buzzService: PostService, public route: ActivatedRoute) {
+  constructor(public buzzService: PostService, public route: ActivatedRoute) {
     this.buzzForm = new FormGroup({
       title: new FormControl('', [Validators.required]),
       content: new FormControl('', [Validators.required]),
@@ -43,6 +43,8 @@ export class PostCreateComponent implements OnInit {
           this.buzzForm.patchValue({ content: this.buzz?.content ?? '' });
           this.buzzForm.patchValue({ image: this.buzz?.imagePath ?? '' });
           this.imagePreview = postData.imagePath;
+          this.isLoading = false;
+        }, () => {
           this.isLoading = false;
         });
       } else {

@@ -6,7 +6,6 @@ const Buzz = require("../models/postModel");
 
 
 pageRoute.get('', (req, res, next) => {
-    console.log('Request Received');
     const pageSize = +req.query.pageSize;
     const currentPage = +req.query.currentPage;
     const findQuery = Buzz.find();

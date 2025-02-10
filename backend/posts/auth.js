@@ -21,7 +21,8 @@ authRoute.post('/register', (req, res, next) => {
             });
         }).catch(err => {
             res.status(404).json({
-                message: 'Error countered'
+                message: 'User already exists!',
+                error: err
             })
         })
     })
@@ -32,15 +33,15 @@ authRoute.post('/login', (req, res, next) => {
     User.findOne({ email: req.body.email }).then(user => {
         if (!user) {
             return res.status(404).json({
-                message: 'User not found'
+                message: 'User does not exists!'
             });
         }
         currentUser = user;
         return bcrypt.compare(req.body.password, user.password)
     }).then(result => {
-        if (!result) {
+        if (!result || !currentUser) {
             return res.status(404).json({
-                message: 'Incorrect password'
+                message: 'Incorrect credentials!'
             });
         }
         const token = jwt.sign({ email: currentUser.email, userId: currentUser._id }, 'this_is_a_key_which_is_used_for_login', { expiresIn: '1h' });
@@ -53,7 +54,7 @@ authRoute.post('/login', (req, res, next) => {
 
     }).catch(err => {
         res.status(400).json({
-            message: 'Some error occured',
+            message: 'Some error occured!!!',
             error: err
         })
     })
