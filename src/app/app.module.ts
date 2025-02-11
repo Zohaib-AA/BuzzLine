@@ -12,7 +12,6 @@ import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { ErrorComponent } from './components/error/error.component';
 import { AngularMaterialModule } from './angular-material.module';
 import { PostModule } from './components/posts/post.module';
-import { AuthModule } from './components/auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -26,8 +25,7 @@ import { AuthModule } from './components/auth/auth.module';
     AppRoutingModule,
     HttpClientModule,
     AngularMaterialModule,
-    PostModule,
-    AuthModule
+    PostModule
   ],
   providers: [
     provideAnimationsAsync(),

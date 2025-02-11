@@ -2,8 +2,8 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { AngularMaterialModule } from "../../angular-material.module";
-import { AppRoutingModule } from "../../app-routing.module";
 import { LoginComponent } from "./login/login.component";
+import { AuthRoutingModule } from "./auth-routing.module";
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { LoginComponent } from "./login/login.component";
     ReactiveFormsModule,
     CommonModule,
     AngularMaterialModule,
-    AppRoutingModule
+    AuthRoutingModule
   ]
 })
 export class AuthModule { }
