@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Auth } from '../interfaces&constants/auth.interface';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { Url } from '../interfaces&constants/url.constant';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +43,7 @@ export class AuthService {
     if (mode == 'login') {
       sig = mode;
     }
-    const url = `http://localhost:3000/api/account/${sig}`;
+    const url =  environment.apiUrl + Url.account + sig;
     this.http.post<{ token: string, expiresIn: number, userId: string }>(url, auth).subscribe(response => {
       if (mode == 'login') {
         this.token = response.token;
