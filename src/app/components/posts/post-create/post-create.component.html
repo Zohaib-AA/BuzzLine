@@ -2,7 +2,6 @@
     <mat-spinner *ngIf="isLoading"></mat-spinner>
     <form [formGroup]="buzzForm" (ngSubmit)="onAddBuzz(matForm)" #matForm="ngForm" *ngIf="!isLoading">
         <mat-form-field>
-            <!-- <label for="title">Title</label> -->
             <input matInput type="text" id="title" placeholder="Title here..." formControlName="title">
             <mat-error *ngIf="isSubmit && validate['title'].invalid">Please Add Title</mat-error>
         </mat-form-field>
@@ -14,13 +13,12 @@
             <img [src]="imagePreview" alt={{buzzForm.value.title}}>
         </div>
         <mat-form-field>
-            <!-- <label for="content">Description</label> -->
             <textarea matInput rows="4" id="content" placeholder="Description here..."
                 formControlName="content"></textarea>
             <mat-error *ngIf="isSubmit && validate['content'].invalid">Please Add Description</mat-error>
         </mat-form-field>
         <button type="submit" mat-raised-button color="primary" (click)="submitForm()">
-            Add Buzz
+            {{mode == 'create' ? 'Add' : 'Update'}} Buzz
         </button>
     </form>
 </mat-card>

@@ -54,7 +54,7 @@ exports.updatePost = (req, res, next) => {
     }
     const buzz = new Buzz({ _id: req.body.id, title: req.body.title, content: req.body.content, imagePath: imagePath, creator: req.userData.userId });
     Buzz.updateOne({ _id: req.params.id, creator: req.userData.userId }, buzz).then(result => {
-        if (result.modifiedCount > 0) {
+        if (result.matchedCount > 0) {
             res.status(200).json({
                 message: 'Post updated succesfully',
             });
