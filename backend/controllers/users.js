@@ -41,7 +41,7 @@ exports.loginUser = (req, res, next) => {
                 message: 'Incorrect credentials!'
             });
         }
-        const token = jwt.sign({ email: currentUser.email, userId: currentUser._id }, 'this_is_a_key_which_is_used_for_login', { expiresIn: '1h' });
+        const token = jwt.sign({ email: currentUser.email, userId: currentUser._id }, process.env.JWT_KEY, { expiresIn: '1h' });
         res.status(200).json({
             token: token,
             message: 'Logged-In succesfully',
