@@ -8,7 +8,7 @@ const postRoute = require('./posts/post');
 const authRoute = require('./posts/auth');
 const app = express();
 
-mongoose.connect("mongodb+srv://Zohaib:l9OSdSAmYUVYuGJ3@clusterbuzz.3o7sr.mongodb.net/express-angular?retryWrites=true&w=majority&appName=ClusterBuzz").then(() => {
+mongoose.connect("mongodb+srv://Zohaib:" + process.env.MONGO_DB_ATLAS + "@clusterbuzz.3o7sr.mongodb.net/express-angular?retryWrites=true&w=majority&appName=ClusterBuzz").then(() => {
     console.log("Connected to databse");
 }).catch((err) => {
     console.log(err);
