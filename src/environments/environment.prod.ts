@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:3000/',
+    apiUrl: 'http://buzz-env.eba-pmh45pht.ap-south-1.elasticbeanstalk.com/',
 }
